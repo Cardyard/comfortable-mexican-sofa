@@ -8,6 +8,8 @@
 	License: http://imperavi.com/redactor/license/
 
 	Usage: $('#content').redactor();
+	Mike Hayman 18 June 17, replace .size() with .length for compatibility with jquery
+
 */
 
 (function($)
@@ -5654,7 +5656,8 @@
 						if (this.utils.browser('mozilla'))
 						{
 							var td = $(this.keydown.current).closest('td', this.$editor[0]);
-							if (td.size() !== 0 && td.text() !== '')
+							// Mike 18 June 17, replace .size() with .length
+							if (td.length !== 0 && td.text() !== '')
 							{
 								e.preventDefault();
 								return false;
@@ -6910,8 +6913,8 @@
 							$item   = value.item,
 							inValues = typeof observe['in'] != 'undefined' ? observe['in'] : false,
 							outValues = typeof observe['out'] != 'undefined' ? observe['out'] : false;
-
-						if ($current.closest(element).size() > 0)
+						// Mike 18 June 17, replace .size() with .length
+						if ($current.closest(element).length > 0)
 						{
 							this.observe.setDropdownProperties($item, inValues, outValues);
 						}
