@@ -1,5 +1,22 @@
 # frozen_string_literal: true
-
+#     create_table :comfy_cms_pages, force: true do |t|
+#       t.integer :site_id,         null: false
+#       t.integer :layout_id
+#       t.integer :parent_id
+#       t.integer :target_page_id
+#       t.string  :label,           null: false
+#       t.string  :slug
+#       t.string  :full_path,       null: false
+#       t.text    :content_cache,   limit: LIMIT
+#       t.integer :position,        null: false, default: 0
+#       t.integer :children_count,  null: false, default: 0
+#       t.boolean :is_published,    null: false, default: true
+#       t.timestamps
+#
+#       t.index [:site_id, :full_path]
+#       t.index [:parent_id, :position]
+#       t.index [:is_published]
+#     end
 class Comfy::Cms::Page < ActiveRecord::Base
 
   self.table_name = "comfy_cms_pages"
@@ -27,6 +44,7 @@ class Comfy::Cms::Page < ActiveRecord::Base
                     :escape_slug,
                     :assign_full_path
   before_create     :assign_position
+  before_save       :make_published
   after_save        :sync_child_full_paths!
   after_find        :unescape_slug_and_path
 
@@ -146,6 +164,13 @@ protected
     return unless slug.present?
     unescaped_slug = CGI.unescape(slug)
     errors.add(:slug, :invalid) unless unescaped_slug =~ %r{^\p{Alnum}[\.\p{Alnum}\p{Mark}_-]*$}i
+  end
+
+  def make_published
+    # Mike, 4/11/24. If publish a page, set created_at to now so it shows correctly in view
+    if persisted? && is_published_changed? && is_published?
+      self.created_at = Time.now
+    end
   end
 
   # Forcing re-saves for child pages so they can update full_paths
