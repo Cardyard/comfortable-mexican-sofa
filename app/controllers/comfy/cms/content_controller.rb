@@ -63,6 +63,7 @@ protected
   # Attempting to populate @cms_page and @cms_layout instance variables so they
   # can be used in view helpers/partials
   def load_cms_page
+    return if @routing_error
     unless find_cms_page_by_full_path("/#{params[:cms_path]}")
       if find_cms_page_by_full_path("/404")
         render_page(:not_found)
