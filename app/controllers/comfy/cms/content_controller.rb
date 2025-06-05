@@ -15,7 +15,10 @@ class Comfy::Cms::ContentController < Comfy::Cms::BaseController
                 only: :show
 
   def show
-    if @cms_page.target_page.present?
+    if @routing_error
+      # Set in Comfy::Cms::BaseController to mimic routing error
+      render file: Rails.public_path.join('404.html'), status: :not_found, layout: false
+    elsif @cms_page.target_page.present?
       redirect_to @cms_page.target_page.url(relative: true)
     else
       respond_to do |format|
@@ -30,8 +33,6 @@ class Comfy::Cms::ContentController < Comfy::Cms::BaseController
         end
       end
     end
-  rescue ActionController::RoutingError
-    render file: Rails.public_path.join('404.html'), status: :not_found, layout: false
   end
 
 protected

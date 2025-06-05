@@ -9,6 +9,10 @@ class Comfy::Cms::BaseController < ComfortableMexicanSofa.config.public_base_con
 protected
 
   def load_cms_site
+    # This controller is inherited by following controllers, which call
+    #   this method since it is referenced in "before action" above
+    #     Comfy::Cms::ContentController
+    #     Comfy::Cms::AssetsController
     @cms_site ||=
       if params[:site_id]
         ::Comfy::Cms::Site.find_by_id(params[:site_id])
@@ -22,11 +26,15 @@ protected
           params[:cms_path].gsub!(%r{\A#{@cms_site.path}}, "")
           params[:cms_path]&.gsub!(%r{\A/}, "")
         else
-          raise ActionController::RoutingError, "Site Not Found"
+          # Following "raise" doesn't appear to work in Rails 8, so use
+          #   scope variable
+          # raise ActionController::RoutingError, "Site Not Found"
+          @routing_error = true
         end
       end
     else
-      raise ActionController::RoutingError, "Site Not Found"
+      # raise ActionController::RoutingError, "Site Not Found"
+      @routing_error = true
     end
   end
 
