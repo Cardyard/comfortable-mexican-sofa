@@ -70,6 +70,7 @@ protected
       else
         # message = "Page Not Found at: \"#{params[:cms_path]}\""
         # raise ActionController::RoutingError, message
+        # yes
         @routing_error = true
       end
     end
