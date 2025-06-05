@@ -68,8 +68,9 @@ protected
       if find_cms_page_by_full_path("/404")
         render_page(:not_found)
       else
-        message = "Page Not Found at: \"#{params[:cms_path]}\""
-        raise ActionController::RoutingError, message
+        # message = "Page Not Found at: \"#{params[:cms_path]}\""
+        # raise ActionController::RoutingError, message
+        @routing_error = true
       end
     end
   end
