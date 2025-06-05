@@ -30,6 +30,8 @@ class Comfy::Cms::ContentController < Comfy::Cms::BaseController
         end
       end
     end
+  rescue ActionController::RoutingError
+    render file: Rails.public_path.join('404.html'), status: :not_found, layout: false
   end
 
 protected
